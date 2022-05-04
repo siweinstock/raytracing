@@ -1,8 +1,6 @@
 from Scene import Scene
 from Ray import Ray
-from Plane import Plane
-from Sphere import Sphere
-from Box import Box
+from Primitives import Plane, Sphere, Box
 import numpy as np
 
 
@@ -17,26 +15,26 @@ epsilon = 0.001
 
 
 # ray-plane intersection from page 9
-def intersect_plane(ray: Ray, plane: Plane):
-    return -((np.dot(ray.P0, plane.N) + plane.offset) // np.dot(ray.V, plane.N))
+# def intersect_plane(ray: Ray, plane: Plane):
+#     return -((np.dot(ray.P0, plane.N) + plane.offset) // np.dot(ray.V, plane.N))
 
 
 # ray-sphere intersection from page 7
-def intersect_sphere(ray: Ray, sphere: Sphere):
-    L = np.subtract(sphere.ctr, ray.P0)     # L = O-P0
-    tca = np.dot(L, ray.V)
-
-    if tca < 0:
-        return 0
-
-    dsq = np.dot(L, L) - tca ** 2     # d^2=L*L-tca^2
-    rsq = sphere.R ** 2
-
-    if dsq > rsq:
-        return 0
-
-    thc = np.sqrt(rsq - dsq)
-    return tca - thc
+# def intersect_sphere(ray: Ray, sphere: Sphere):
+#     L = np.subtract(sphere.ctr, ray.P0)     # L = O-P0
+#     tca = np.dot(L, ray.V)
+#
+#     if tca < 0:
+#         return 0
+#
+#     dsq = np.dot(L, L) - tca ** 2     # d^2=L*L-tca^2
+#     rsq = sphere.R ** 2
+#
+#     if dsq > rsq:
+#         return 0
+#
+#     thc = np.sqrt(rsq - dsq)
+#     return tca - thc
 
 
 # TODO using the slabs method
@@ -66,25 +64,27 @@ def intersect_box(ray: Ray, box: Box):
 
 # find the nearest intersecting primitive as shown in page 11
 def find_intersection(scn: Scene, ray: Ray):
-    min_t = float("inf")
+    min_t = t = float("inf")
     min_primitive = None
 
     for primitive in scn.primitives:
         if isinstance(primitive, Plane):
-            # print(str(type(primitive)) + "is plane")
-            t = intersect_plane(ray, primitive)
+            print(str(type(primitive)) + " is plane")
+            # t = intersect_plane(ray, primitive)
         elif isinstance(primitive, Sphere):
-            t = intersect_sphere(ray, primitive)
-            # print(str(type(primitive)) + "is sphere")
+            # pass
+            # t = intersect_sphere(ray, primitive)
+            print(str(type(primitive)) + " is sphere")
         elif isinstance(primitive, Box):
-            t = intersect_box(ray, primitive)
-            # print(str(type(primitive)) + "is box")
+            # t = intersect_box(ray, primitive)
+            print(str(type(primitive)) + " is box")
         # shouldn't get here
         else:
+            print("?")
             t = float("inf")
 
         if t < min_t:
             min_t = t
             min_primitive = primitive
 
-        return Intersection(min_primitive, min_t)
+    return Intersection(min_primitive, min_t)
